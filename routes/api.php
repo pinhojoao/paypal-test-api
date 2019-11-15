@@ -9,6 +9,7 @@ Route::group([
     Route::delete('/cart', 'CartController@delete');
     Route::put('/cart', 'CartController@update');
     Route::post('/checkout', 'CheckoutController@pay');
+    Route::post('/execute', 'CheckoutController@execute');
     Route::get('/finish', 'CheckoutController@finish')->name('checkout.success');
     Route::get('/cancel', 'CheckoutController@cancel')->name('checkout.cancel');
 });

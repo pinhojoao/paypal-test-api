@@ -7,6 +7,7 @@ use App\CartFormatter;
 use App\User;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PayPal\Api\Address;
 use PayPal\Api\Amount;
 use PayPal\Api\Payer;
@@ -22,8 +23,10 @@ class CheckoutController extends Controller
 {
     public function pay(Request $request)
     {
-        $user = new User();
+        $user = User::first();
         $cart = Cart::get();
+        parse_str($request->data, $arr);
+        Log::debug($arr);
 
         $apiContext = new ApiContext(
             new OAuthTokenCredential(
@@ -32,17 +35,17 @@ class CheckoutController extends Controller
             )
         );
         $payerInfo = new PayerInfo();
-        $payerInfo->setFirstName($user->first_name);
-        $payerInfo->setLastName($user->last_name);
-        $payerInfo->setEmail($user->email);
+        $payerInfo->setFirstName($arr['first_name']);
+        $payerInfo->setLastName($arr['last_name']);
+        $payerInfo->setEmail($arr['email']);
 
         $address = new Address();
-        $address->setPhone($user->phone_number);
-        $address->setCity($user->city);
-        $address->setState($user->state);
+        $address->setPhone($arr['phone_number']);
+        $address->setCity($arr['city']);
+        $address->setState($arr['state']);
         $address->setCountryCode($user->country);
-        $address->setLine1($user->address);
-        $address->setPostalCode($user->zip);
+        $address->setPostalCode($arr['zip']);
+        $address->setLine1($arr['address']);
         $payerInfo->setBillingAddress($address);
 
         $payer = new Payer();
@@ -69,6 +72,7 @@ class CheckoutController extends Controller
         try {
             $payment->create($apiContext);
             $res = json_decode($payment);
+
             return $this->respond(['id' => $res->id]);
         }
         catch (PayPalConnectionException $ex) {
@@ -76,5 +80,14 @@ class CheckoutController extends Controller
             //REALLY HELPFUL FOR DEBUGGING
             return $this->respondInternalError($ex->getData());
         }
+    }
+
+    public function execute(Request $request)
+    {
+        $id = $request->paymentID;
+
+        Cart::get()->delete();
+
+        return $this->respond(['id' => $id]);
     }
 }

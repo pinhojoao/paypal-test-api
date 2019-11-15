@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('phone_number');
             $table->string('country');
             $table->string('state');
+            $table->string('city');
             $table->string('zip');
             $table->string('address');
 

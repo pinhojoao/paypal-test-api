@@ -11,19 +11,6 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
-    public function __construct(array $attributes = [])
-    {
-        $this->first_name = 'Jane';
-        $this->last_name = 'Doe';
-        $this->email = 'jane@janedoe.com';
-        $this->phone_number = '555-2112';
-        $this->country = 'US';
-        $this->state = 'NY';
-        $this->city = 'New York';
-        $this->zip = 10012;
-        $this->address = '199 Lafayette Street';
-    }
-
     /**
      * The attributes that should be hidden for arrays.
      *

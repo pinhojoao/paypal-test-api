@@ -8,7 +8,7 @@ class UserController extends Controller
 {
     public function show()
     {
-        $user = new User();
+        $user = User::first();
         return $this->respond($user);
     }
 }
