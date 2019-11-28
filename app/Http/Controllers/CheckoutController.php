@@ -54,7 +54,7 @@ class CheckoutController extends Controller
 
         $amount = new Amount();
         $amount->setTotal(CartFormatter::getTotal($cart));
-        $amount->setCurrency('USD');
+        $amount->setCurrency('BRL');
 
         $transaction = new Transaction();
         $transaction->setAmount($amount);
